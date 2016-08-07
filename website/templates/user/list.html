@@ -1,0 +1,109 @@
+{% extends 'common/base.html' %}
+{% load widget_tweaks %} <!-- #0 -->
+
+{% block content %}
+
+{% include 'common/form_errors.html' %}
+
+<!-- #1 -->
+<div class="panel panel-default panel-table filterable">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col col-xs-6">
+                <h3 class="panel-title">Пользователи</h3>
+            </div>
+            <div class="col col-xs-6 text-right">
+                <button class="btn btn-default btn-sm btn-filter"><span class="glyphicon glyphicon-filter"></span>
+                    Фильтр
+                </button>
+                {% if is_admin %}
+                <button id="create-user" type="button" class="btn btn-sm btn-success btn-create"><span
+                        class="glyphicon glyphicon-plus"></span> Добавить
+                </button>
+                <script type="text/javascript">
+                    $('#create-user').click(function() {
+                        window.location = "{% url 'user-new' %}"
+                    });
+                </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-list">
+            <thead>
+            <tr class="filters">
+                <th><input type="text" class="form-control" placeholder="ФИО" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Управление" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Отдел" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Должность" disabled></th>
+                <th class="col-md-2 text-center">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in object_list %}
+            <tr>
+                <td>{{ user.l_name }} {{ user.f_name }} {{ user.patronymic }}</td>
+                <td>{{ user.department_id }}</td>
+                <td>{{ user.unit_id }}</td>
+                <td>{{ user.post_id }}</td>
+
+                <td class="text-center">
+                    <a href="{% url 'user-contact' pk=user.id %}" class="btn btn-default"><span
+                            class="glyphicon glyphicon-user"></span></a>
+                    {% if is_admin %}
+                    <a href="{% url 'user-edit' pk=user.id %}" class="btn btn-warning"><span
+                            class="glyphicon glyphicon-pencil"></span></a>
+
+                    <!--окно удаления пользователя-->
+                    <div class="modal fade" id="confirm-delete-{{ user.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel-{{ user.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel-{{ user.id }}">Вы действительно хотите
+                                        удалить данный контакт?</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <p><b>ФИО: </b>{{ user.l_name }} {{ user.f_name }} {{ user.patronymic }}</p>
+
+                                    <p><b>Роль в системе:</b> {{ user.role_id }}</p>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <form action="{% url 'user-delete' pk=user.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-ok">Удалить</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#confirm-delete-{{ user.id }}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                    <!--окно удаления пользователя-->
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-footer">
+        {% include 'common/pagination.html' %}
+    </div>
+
+
+</div>
+
+{% endblock %}

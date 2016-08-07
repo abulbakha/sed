@@ -1,0 +1,83 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <b>
+                    <a class="navbar-brand" href="/">
+                        <!--SED website-->
+                        <img alt="Brand" src="{% static 'added/images/sed.png' %}" width="110" height="50">
+                    </a></b>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                     {% if active_menu == 'home' %}
+                    <li class="active"><a href="/">Главная</a></li>
+                    {% else %}
+                    <li><a href="/">Главная</a></li>
+                    {% endif %}
+                    {% if active_menu == 'documents' %}
+                    <li class="active"><a href="{% url 'document-list' %}">Документы</a></li>
+                    {% else %}
+                    <li><a href="{% url 'document-list' %}">Документы</a></li>
+                    {% endif %}
+                    {% if active_menu == 'users' %}
+                    <li class="active"><a href="{% url 'user-list' %}">Контакты</a></li>
+                    {% else %}
+                    <li><a href="{% url 'user-list' %}">Контакты</a></li>
+                    {% endif %}
+                    {% if active_menu == 'meetings' %}
+                    <li class="active"><a href="{% url 'meeting-list' %}">Собрания</a></li>
+                    {% else %}
+                    <li><a href="{% url 'meeting-list' %}">Собрания</a></li>
+                    {% endif %}
+
+                    {% if is_admin %}
+                    {% if active_menu == 'administration' %}
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Администрирование<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'department-list' %}">Управления</a></li>
+                            <li><a href="{% url 'unit-list' %}">Отделы</a></li>
+                            <li><a href="{% url 'post-list' %}">Должности</a></li>
+                            <li><a href="{% url 'room-list' %}">Комнаты</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Администрирование<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'department-list' %}">Управления</a></li>
+                            <li><a href="{% url 'unit-list' %}">Отделы</a></li>
+                            <li><a href="{% url 'post-list' %}">Должности</a></li>
+                            <li><a href="{% url 'room-list' %}">Комнаты</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+
+
+                </ul>
+                <div class="nav navbar-nav navbar-right">
+                    <div class="container-fluid">
+                        {% if user.is_authenticated %}
+                        <p class="navbar-text navbar-right">
+                            Добро пожаловать, {{ user.username }}. <a class="navbar-link" href="{% url 'logout' %}">Выйти?</a>
+                        </p>
+                        {% else %}
+
+                        <p class="navbar-text navbar-right">
+                            Добро пожаловать. <a class="navbar-link"
+                                                 href="{% url 'login' %}?next={{ request.get_full_path }}">Логин?</a>
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>

@@ -1,0 +1,14 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="text-center center-block">
+    <h1>Удалить пользователя</h1>
+
+<form action="{% url 'user-delete' pk=user.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-ok">Удалить</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+    </button>
+</form>
+    </div>
+{% endblock %}

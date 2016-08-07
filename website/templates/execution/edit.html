@@ -1,0 +1,122 @@
+{% extends 'common/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<h1>Добавить исполнение</h1>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{% url 'execution-new' doc_id=doc_id %}" method="POST"
+                  class="form-horizontal" role="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabelexecution">Добавление резолюции</h4>
+                </div>
+
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">От кого</label>
+                            <div class="col-sm-9">
+                                {% render_field execution_form.from_id placeholder="От кого" class="form-control" %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Кому</label>
+                            <div class="col-sm-9">
+                                {% render_field execution_form.to_id placeholder="Кому" class="form-control" %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Контроль</label>
+                            <div class="col-sm-3">
+                                <select id="id_control_date_day" name="control_date_day" class="form-control col-sm-4">
+                                    <option value="0">---</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="id_control_date_month" name="control_date_month" class="form-control">
+                                    <option value="0">---</option>
+                                    <option value="1">Января</option>
+                                    <option value="2">Февраля</option>
+                                    <option value="3">Марта</option>
+                                    <option value="4">Апреля</option>
+                                    <option value="5">Мая</option>
+                                    <option value="6">Июня</option>
+                                    <option value="7">Июля</option>
+                                    <option value="8">Августа</option>
+                                    <option value="9">Сентября</option>
+                                    <option value="10">Октября</option>
+                                    <option value="11">Ноября</option>
+                                    <option value="12">Декабря</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="id_control_date_year" name="control_date_year"
+                                        class="form-control col-sm-4">
+                                    <option value="0">---</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Комментарий</label>
+                            <div class="col-sm-9">
+                                {% render_field execution_form.comment placeholder="Комментарий" class="form-control"%}
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-success btn-create">Добавить</button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Отмена
+                    </button>
+                </div>
+            </form>
+        </div>
+</div>
+{% endblock %}

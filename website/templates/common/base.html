@@ -1,0 +1,33 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+<html>
+<head>
+    <title>SED website</title>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'added/css/my.css' %}" rel="stylesheet" media="screen">
+    <script src="{% static 'added/js/jquery-2.2.2.js' %}"></script>
+    <script src="{% static 'added/js/file-input.js' %}"></script>
+    <script src="{% static 'added/js/my.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    {% include 'common/menu.html' %}
+
+    <div class="content">
+        {% include 'common/form_errors.html' %}
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+{% include 'common/footer.html' %}
+
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script>
+    $('input[type=file]').bootstrapFileInput();
+    $('.file-inputs').bootstrapFileInput();
+
+</script>
+</body>
+</html>

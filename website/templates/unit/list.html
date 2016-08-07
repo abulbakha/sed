@@ -1,0 +1,51 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+<div class="panel panel-default panel-table">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col col-xs-6">
+                <h3 class="panel-title">Отделы</h3>
+            </div>
+            <div class="col col-xs-6 text-right">
+                <button id="create-unit" type="button" class="btn btn-sm btn-success btn-create"><span
+                        class="glyphicon glyphicon-plus"></span> Добавить
+                </button>
+                <script type="text/javascript">
+                    $('#create-unit').click(function() {
+                        window.location = "{% url 'unit-new' %}"
+                    });
+
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-list">
+            <thead>
+            <th>Наименование</th>
+            <th class="col-md-2 text-center">Действия</th>
+            </thead>
+            <tbody>
+            {% for unit in object_list %}
+            <tr>
+                <td>{{ unit.name }}</td>
+                <td class="text-center">
+                    <a href="{% url 'unit-edit' pk=unit.id %}" class="btn btn-warning"><span
+                            class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{% url 'unit-delete' pk=unit.id %}" class="btn btn-danger"><span
+                            class="glyphicon glyphicon-trash"></span></a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        {% include 'common/pagination.html' %}
+    </div>
+
+</div>
+
+{% endblock %}

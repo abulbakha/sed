@@ -1,0 +1,71 @@
+{% extends 'common/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="panel panel-default panel-table filterable">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col col-xs-6">
+                <h3 class="panel-title">Документы</h3>
+            </div>
+            <div class="col col-xs-6 text-right">
+                <button class="btn btn-default btn-sm btn-filter"><span class="glyphicon glyphicon-filter"></span>
+                    Фильтр
+                </button>
+                <button id="create-document" type="button" class="btn btn-sm btn-success btn-create"><span
+                        class="glyphicon glyphicon-plus"></span> Добавить
+                </button>
+                <script type="text/javascript">
+                    $('#create-document').click(function() {
+                        window.location = "{% url 'document-new' %}"
+                    });
+
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-list">
+            <thead>
+            <tr class="filters">
+                <th><input type="text" class="form-control" placeholder="№ док-та" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Описание" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Дата" disabled></th>
+                <th><input type="text" class="form-control" placeholder="От кого" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Кому" disabled></th>
+                <th class="col-md-1 text-center">Исполнен</th>
+                <th class="col-md-2 text-center">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for document in object_list %}
+            <tr>
+                <td class="text-center">{{ document.name }}</td>
+                <td>{{ document.description }}</td>
+                <td>{{ document.created_date }}</td>
+                <td>{{ document.from_id }}</td>
+                <td>{{ document.to_id }}</td>
+                {% if document.is_executed %}
+                <td class="text-center" style="vertical-align: middle;"><span class="glyphicon glyphicon-ok-circle" /></td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                <td class="text-center" style="vertical-align: middle;">
+                    <a href="{% url 'document-edit' pk=document.id %}" class="btn btn-default"><span
+                            class="glyphicon glyphicon-folder-open"></span></a>
+                    <a href="{% url 'document-delete' pk=document.id %}" class="btn btn-danger"><span
+                            class="glyphicon glyphicon-trash"></span></a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="panel-footer">
+            {% include 'common/pagination.html' %}
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

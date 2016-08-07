@@ -1,0 +1,498 @@
+{% extends 'common/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+{% if execution %}
+<div class="alert alert-success">
+    Документ <b>{{ object.name }}</b> исполнен <b>{{ execution.created_date }}</b>
+    пользователем <b>{{ execution.creator_id }}</b>
+    <div class="pull-right">
+        <span class="glyphicon glyphicon-ok-circle"></span>
+    </div>
+</div>
+{% endif %}
+
+<div class="panel panel-default panel-table">
+    <div class="panel-heading">
+        <legend>Карточка документа
+            <div class="pull-right">
+                {% if not execution %}
+                <button id="execution-form-submit" type="submit" class="btn btn-sm btn-success btn-create">
+                    <span class="glyphicon glyphicon-ok"></span> Добавить исполнение
+                </button>
+                <script>
+                    $( "#execution-form-submit" ).click(function() {
+                        $( "#execution-form" ).submit();
+                    });
+
+
+
+                </script>
+                {% if not resolution_list %}
+                <a href="{% url 'document-edit' pk=document.id %}" class="btn btn-sm btn-warning"><span
+                        class="glyphicon glyphicon-pencil"></span> Редактировать</a>
+                <!--окно удаления doc-->
+                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete-doc">
+                    <span class="glyphicon glyphicon-trash"></span> Удалить
+                </button>
+                {% endif %}
+                {% else %}
+                <div class="pull-right">
+                    <button id="delete-execution-form-submit" type="submit" class="btn btn-sm btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span> Отменить исполнение
+                    </button>
+                </div>
+                <script>
+                    $( "#delete-execution-form-submit" ).click(function() {
+                        $( "#delete-execution-form" ).submit();
+                    });
+
+
+                </script>
+                {% endif %}
+            </div>
+        </legend>
+        {% if not execution %}
+        <form id="execution-form" action="{% url 'execution-new'  doc_id=object.pk %}" method="POST">
+            {% csrf_token %}
+        </form>
+        {% else %}
+        <form id="delete-execution-form" action="{% url 'execution-delete' pk=execution.pk doc_id=object.pk %}"
+              method="POST">
+            {% csrf_token %}
+        </form>
+        {% endif %}
+        <form class="form-horizontal" role="form">
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">№ док-та</label>
+
+                    <p class="col-sm-2 form-control-static">{{ object.name }}</p>
+
+                    <label class="col-sm-1 control-label" for="textinput">Дата</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.created_date }}</p>
+
+                    <label class="col-sm-1 control-label" for="textinput">Версия</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.version }}</p>
+
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">Создал(а)</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.creator_id }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">От кого</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.from_id }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">Кому</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.to_id }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">Краткое описание</label>
+
+                    <div class="col-sm-10">
+                        <p class="col-sm-3 form-control-static">{{ object.description }}</p>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+    <div class="panel-body">
+        <!--окно удаления doc-->
+        <div class="modal fade" id="delete-doc" tabindex="-1" role="dialog"
+             aria-labelledby="doc-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="doc-label">Вы действительно хотите удалить данный
+                            документ?</h4>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <p><b>№ док-та: </b>{{ object.name }}</p>
+                        <p><b>Описание: </b>{{ object.description }}</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <form action="{% url 'document-delete' pk=object.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-ok">Удалить</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p/>
+
+<!--FILES-->
+<div class="panel panel-default panel-table">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col col-xs-6">
+                <h3 class="panel-title">Файлы</h3>
+            </div>
+            <div class="col col-xs-6 text-right">
+                {% if not resolution_list and not execution %}
+                <button class="btn btn-sm btn-primary btn-create" data-toggle="modal" data-target="#confirm-add-file">
+                    <span class="glyphicon glyphicon-paperclip"></span> Прикрепить файл
+                </button>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-list">
+            <thead>
+            <th>Имя файла</th>
+            <th class="col-md-2 text-center">Управление</th>
+            </thead>
+            {% for file in file_list %}
+            <tr>
+                <td>{{ file.name }}</td>
+                <td class="text-center">
+                    <a href="{{ file.uploaded_file.url }}" class="btn btn-default"><span
+                            class="glyphicon glyphicon-download-alt"></span></a>
+
+                    <!--окно удаления файла-->
+                    <div class="modal fade" id="confirm-delete-{{ file.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel-{{ file.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel-{{ file.id }}">Вы действительно хотите
+                                        удалить данный файл?</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <p><b>Имя файла: </b>{{ file.name }}</p>
+
+                                    <p><b>Документ:</b> {{ object.name }}</p>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <form action="{% url 'file-delete' pk=file.id doc_id=object.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-ok">Удалить</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if not resolution_list and not execution %}
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#confirm-delete-{{ file.id }}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                    {% endif %}
+                    <!--окно удаления файла-->
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
+
+<!--окно добавления файла-->
+<div class="modal fade" id="confirm-add-file" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form action="{% url 'file-new' doc_id=object.pk %}" method="POST"
+                  class="form-horizontal" role="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Добавление файла</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Наименование</label>
+
+                            <div class="col-sm-9">
+                                <input class="form-control" id="id_name" maxlength="50" name="name"
+                                       placeholder="Наименование" type="text"/>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Загрузка</label>
+
+                            <div class="col-sm-9">
+                                <input id="id_uploaded_file" name="uploaded_file" type="file"
+                                       data-filename-placement="inside"/>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary btn-create">Прикрепить</button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Отмена
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--окно добавления файла-->
+
+<p/>
+
+<!--RESOLUTION-->
+<div class="panel panel-default panel-table">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col col-xs-6">
+                <h3 class="panel-title">Резолюции</h3>
+            </div>
+            <div class="col col-xs-6 text-right">
+                {% if not resolution_list and not execution %}
+                <button class="btn btn-sm btn-success btn-create" data-toggle="modal"
+                        data-target="#confirm-add-resolution">
+                    <span class="glyphicon glyphicon-duplicate"></span> Добавить резолюцию
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-list">
+            <thead>
+            <th>От кого</th>
+            <th>Кому</th>
+            <th>Дата создания</th>
+            <th>Контрольный срок</th>
+            <th>Описание</th>
+            <th>Управление</th>
+            </thead>
+
+
+            {% for resolution in resolution_list %}
+            <tr>
+                <td>{{ resolution.from_id }}</td>
+                <td>{{ resolution.to_id }}</td>
+                <td>{{ resolution.created_date }}</td>
+                <td>{{ resolution.control_date }}</td>
+                <td>{{ resolution.comment }}</td>
+                <td>
+                    {% if not execution %}
+                    {% if forloop.last %}
+                    <button class="btn btn-sm btn-default btn-create" data-toggle="modal"
+                            data-target="#confirm-add-resolution">
+                        <span class="glyphicon glyphicon-plus"></span> Подрезолюция
+                    </button>
+
+                    <!--окно удаления резолюции-->
+                    <div class="modal fade" id="confirm-delete-resolution-{{ resolution.id }}" tabindex="-1"
+                         role="dialog"
+                         aria-labelledby="myModalLabel-resolution-{{ resolution.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel-resolution-{{ resolution.id }}">Вы
+                                        действительно хотите
+                                        удалить резолюцию?</h4>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <p><b>Документ:</b> {{ object.name }}</p>
+                                    <p><b>От кого: </b>{{ resolution.from_id }}</p>
+                                    <p><b>Кому: </b>{{ resolution.to_id }}</p>
+                                    <p><b>Котрольный срок: </b>{{ resolution.control_date }}</p>
+                                    <p><b>Описание: </b>{{ resolution.comment }}</p>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <form action="{% url 'resolution-delete' pk=resolution.id doc_id=object.pk %}"
+                                          method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-ok">Удалить</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-danger" data-toggle="modal"
+                            data-target="#confirm-delete-resolution-{{ resolution.id }}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                    {% endif %}
+                    <!--окно удаления резолюции-->
+
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
+
+
+<!--окно добавления resolution-->
+<div class="modal fade" id="confirm-add-resolution" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabelresolution" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form action="{% url 'resolution-new' doc_id=object.pk %}" method="POST"
+                  class="form-horizontal" role="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabelresolution">Добавление резолюции</h4>
+                </div>
+
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">От кого</label>
+                            <div class="col-sm-9">
+                                {% render_field resolution_form.from_id placeholder="От кого" class="form-control" %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Кому</label>
+                            <div class="col-sm-9">
+                                {% render_field resolution_form.to_id placeholder="Кому" class="form-control" %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Контроль</label>
+                            <div class="col-sm-3">
+                                <select id="id_control_date_day" name="control_date_day" class="form-control col-sm-4">
+                                    <option value="0">---</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="id_control_date_month" name="control_date_month" class="form-control">
+                                    <option value="0">---</option>
+                                    <option value="1">Января</option>
+                                    <option value="2">Февраля</option>
+                                    <option value="3">Марта</option>
+                                    <option value="4">Апреля</option>
+                                    <option value="5">Мая</option>
+                                    <option value="6">Июня</option>
+                                    <option value="7">Июля</option>
+                                    <option value="8">Августа</option>
+                                    <option value="9">Сентября</option>
+                                    <option value="10">Октября</option>
+                                    <option value="11">Ноября</option>
+                                    <option value="12">Декабря</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="id_control_date_year" name="control_date_year"
+                                        class="form-control col-sm-4">
+                                    <option value="0">---</option>
+                                    <option value="2016" selected>2016</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="textinput">Комментарий</label>
+                            <div class="col-sm-9">
+                                {% render_field resolution_form.comment placeholder="Комментарий" class="form-control"%}
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-success btn-create">Добавить</button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Отмена
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--окно добавления resolution-->
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'common/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="panel panel-default panel-table">
+    <div class="panel-heading">
+        <h2>Контактные данные пользователя</h2>
+
+        {% include 'common/form_errors.html' %}
+
+        <div>
+
+        </div>
+
+        <form action="" class="form-horizontal" role="form">
+
+            <fieldset>
+                <legend>Контактная информация
+                    <!--<div class="pull-right">-->
+                    <!--<button id="list-user" type="button" class="btn btn-sm btn-success btn-create"><span-->
+                    <!--class="glyphicon glyphicon-chevron-left"></span> Назад-->
+                    <!--</button>-->
+                    <!--</div>-->
+                </legend>
+
+                <!--<script type="text/javascript">-->
+                <!--$('#list-user').click(function() {-->
+                <!--window.location = "{% url 'user-list' %}"-->
+                <!--});-->
+                <!--</script>-->
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Фамилия</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.l_name }}</p>
+
+                    <label class="col-sm-1 control-label" for="textinput">Имя</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.f_name }}</p>
+
+                    <label class="col-sm-1 control-label" for="textinput">Отчество</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.patronymic }}</p>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Телефон</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.phone }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">E-mail</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.email }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Адрес</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.address }}</p>
+                </div>
+
+
+                <legend>Должностная информация</legend>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Управление</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.department_id }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Отдел</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.unit_id }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Должность</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.post_id}}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="textinput">Роль</label>
+
+                    <p class="col-sm-3 form-control-static">{{ object.role_id }}</p>
+
+                </div>
+                <div class="col text-right">
+
+                    <button id="cancel-edit" type="button" class="btn btn-sm btn-default btn-cancel">
+                        <span class="glyphicon glyphicon-chevron-left"></span> Назад
+                    </button>
+
+                    <script type="text/javascript">
+                    $('#cancel-edit').click(function() {
+                        window.location = "{% url 'user-list' %}"
+                    });
+
+
+
+                    </script>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

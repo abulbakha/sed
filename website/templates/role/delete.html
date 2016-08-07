@@ -1,0 +1,12 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<h1>Delete role</h1>
+
+<form action="{% url 'role-delete' pk=role.id %}" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url 'role-list' %}">No, cancel.</a>
+</form>
+{% endblock %}

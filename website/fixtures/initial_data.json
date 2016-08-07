@@ -1,0 +1,75 @@
+[
+  {
+    "model": "website.Role",
+    "pk": 1,
+    "fields": {
+      "name": "Admin",
+      "description": "Admin of SED"
+    }
+  },
+  {
+    "model": "website.Role",
+    "pk": 2,
+    "fields": {
+      "name": "User",
+      "description": "User of SED"
+    }
+  },
+  {
+    "model": "website.Department",
+    "pk": 1,
+    "fields": {
+      "name": "Department of SED development"
+    }
+  },
+  {
+    "model": "website.Unit",
+    "pk": 1,
+    "fields": {
+      "name": "IT Unit"
+    }
+  },
+  {
+    "model": "website.Post",
+    "pk": 1,
+    "fields": {
+      "name": "SED Administrator"
+    }
+  },
+  {
+    "model": "website.User",
+    "pk": 1,
+    "fields": {
+      "login": "admin",
+      "password": "pass1234",
+      "f_name": "Anastasiia",
+      "l_name": "Bulbakha",
+      "patronymic": "Yurievna",
+      "phone": "+7123456789",
+      "email": "admin@sed.ru",
+      "address": "Saratov, Astrakhanskaya 87.",
+      "department_id": 1,
+      "unit_id": 1,
+      "post_id": 1,
+      "role_id": 1
+    }
+  },
+  {
+      "model": "auth.user",
+      "pk": 1,
+      "fields": {
+          "password": "pbkdf2_sha256$24000$PYzXr1eTMgw5$4bl5Qzkd03txQUXHDwp6YpzQqxG8l1k+HZ3oApruevw=",
+          "last_login": null,
+          "is_superuser": true,
+          "username": "admin",
+          "first_name": "Anastasiia",
+          "last_name": "Bulbakha",
+          "email": "admin@sed.ru",
+          "is_staff": true,
+          "is_active": true,
+          "date_joined": "2016-04-27T19:17:13.808Z",
+          "groups": [],
+          "user_permissions": []
+      }
+  }
+]
